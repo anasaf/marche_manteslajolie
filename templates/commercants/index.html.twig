@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Commerçants - {{ categorie|capitalize }}{% endblock %}
+
+{% block body %}
+    <div class="container my-5">
+        <!-- Titre -->
+        <h1 class="text-center mb-4">Nos Commerçants - {{ categorie|capitalize }}</h1>
+
+        <!-- Filtres catégories -->
+        <div class="d-flex justify-content-center mb-5">
+            <div class="btn-group">
+                <a href="{{ path('commercants', {categorie: 'mode'}) }}" class="btn btn-outline-dark {% if categorie == 'mode' %}active{% endif %}">Mode</a>
+                <a href="{{ path('commercants', {categorie: 'alimentaire'}) }}" class="btn btn-outline-dark {% if categorie == 'alimentaire' %}active{% endif %}">Alimentaire</a>
+                <a href="{{ path('commercants', {categorie: 'services'}) }}" class="btn btn-outline-dark {% if categorie == 'services' %}active{% endif %}">Services</a>
+            </div>
+        </div>
+
+        <!-- Liste des commerçants -->
+        <div class="row">
+            {% for commercant in commercants %}
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow-sm h-100">
+                        <img src="{{ commercant.image }}" class="card-img-top" alt="{{ commercant.nom }}">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">{{ commercant.nom }}</h5>
+                            <a href="#" class="btn btn-primary">Voir en détail</a>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col-12 text-center">
+                    <p>Aucun commerçant trouvé dans cette catégorie.</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

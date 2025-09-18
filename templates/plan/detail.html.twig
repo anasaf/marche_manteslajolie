@@ -1,0 +1,9 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détail du bâtiment{% endblock %}
+
+{% block body %}
+<h1>Détail du bâtiment {{ id }}</h1>
+<p>Ici tu peux afficher des infos depuis la base de données (boutiques, services, etc.).</p>
+<a href="{{ path('plan') }}">← Retour au plan</a>
+{% endblock %}

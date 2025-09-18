@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil - Mon Centre{% endblock %}
+
+{% block body %}
+    <!-- HERO -->
+    <section class="hero">
+        <div>
+            <h1>Bienvenue à Mon Centre</h1>
+            <p>Shopping, détente et services à votre portée</p>
+            <a href="{{ path('plan') }}" class="btn btn-warning btn-lg">Explorer le plan</a>
+            <a href="{{ path('commercants', {categorie: 'mode'}) }}" class="btn btn-light btn-lg">Découvrir nos commerçants</a>
+        </div>
+    </section>
+
+    <!-- RUBRIQUES -->
+    <section>
+        <h2 class="section-title">Découvrez</h2>
+        <div class="container">
+            <div class="row text-center">
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow-sm h-100">
+                        <img src="https://picsum.photos/400/250?1" class="card-img-top" alt="Plan">
+                        <div class="card-body">
+                            <h5 class="card-title">Plan interactif</h5>
+                            <p class="card-text">Trouvez facilement vos commerces grâce à notre plan digital.</p>
+                            <a href="{{ path('plan') }}" class="btn btn-primary">Voir le plan</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow-sm h-100">
+                        <img src="https://picsum.photos/400/250?2" class="card-img-top" alt="Commerçants">
+                        <div class="card-body">
+                            <h5 class="card-title">Nos commerçants</h5>
+                            <p class="card-text">Mode, alimentaire, services et plus encore.</p>
+                            <a href="{{ path('commercants', {categorie: 'mode'}) }}" class="btn btn-primary">Voir les commerçants</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow-sm h-100">
+                        <img src="https://picsum.photos/400/250?3" class="card-img-top" alt="Contact">
+                        <div class="card-body">
+                            <h5 class="card-title">Contact</h5>
+                            <p class="card-text">Besoin d’informations ? Contactez notre équipe.</p>
+                            <a href="{#  {{ path('contact') }#}" class="btn btn-primary">Nous contacter</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
