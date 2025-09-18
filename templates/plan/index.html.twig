@@ -3,136 +3,276 @@
 {% block title %}Plan 3D interactif{% endblock %}
 
 {% block body %}
-    <div class="container my-5 text-center">
-        <h1>Plan interactif en 3D</h1>
-        <p>Cliquez sur un magasin pour voir ses détails</p>
-    </div>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Colonne gauche : recherche + fiche -->
+            <div class="col-md-4 p-3 bg-light" style="height:100vh; overflow-y:auto; position: relative;">
+                <h2 class="mb-3">Commerçants</h2>
 
-    <div id="plan3d" style="width:100%; height:600px; cursor: pointer;"></div>
+                <!-- Filtre catégorie -->
+                <div class="mb-3">
+                    <label for="categoryFilter" class="form-label fw-bold">Filtrer par catégorie</label>
+                    <select id="categoryFilter" class="form-select">
+                        <option value="">Toutes</option>
+                        <option value="alimentaire">Alimentaire</option>
+                        <option value="textile">Textile</option>
+                        <option value="bazar">Bazar</option>
+                        <option value="vaisselles">Vaisselles</option>
+                        <option value="bijoux">Bijoux</option>
+                        <option value="parfums">Parfums</option>
+                        <option value="tissus">Tissus</option>
+                        <option value="tapis">Tapis</option>
+                    </select>
+                </div>
 
-    <!-- Modal Bootstrap -->
-    <div class="modal fade" id="magasinModal" tabindex="-1" aria-labelledby="magasinModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="magasinModalLabel">Nom du magasin</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                <!-- Barre de recherche premium -->
+                <div class="search-box mb-4 position-relative">
+                    <div class="input-group">
+          <span class="input-group-text bg-white border-end-0 rounded-start-pill">
+            <i class="bi bi-search text-muted"></i>
+          </span>
+                        <input type="text" id="searchInput" class="form-control border-start-0 rounded-end-pill shadow-sm" placeholder="Rechercher une boutique...">
+                    </div>
+                    <ul id="autocompleteList" class="list-group mt-2 shadow-sm" style="display:none; position:absolute; z-index:1000; width:90%;"></ul>
                 </div>
-                <div class="modal-body text-center">
-                    <img id="magasinImage" src="" alt="Logo magasin" class="img-fluid rounded mb-3" style="max-height:200px;">
-                    <p id="magasinDescription">Description du magasin...</p>
+
+                <!-- Liste des commerçants -->
+                <ul id="commercantList" class="list-group mb-4"></ul>
+
+                <!-- Fiche commerçant premium -->
+                <div id="magasinDetails" class="card shadow-lg border-0 rounded-3" style="display:none;">
+                    <img id="magasinImage" src="" alt="Image magasin" class="card-img-top rounded-top" style="max-height:220px; object-fit:cover;">
+                    <div class="card-body text-center">
+                        <h3 id="magasinTitle" class="card-title fw-bold mb-3"></h3>
+                        <p id="magasinDescription" class="card-text text-muted mb-4"></p>
+                        <a id="magasinLink" href="#" target="_blank" class="btn btn-lg btn-dark px-4 rounded-pill">Découvrir</a>
+                    </div>
                 </div>
-                <div class="modal-footer">
-                    <a id="magasinLink" href="#" class="btn btn-primary">Voir la fiche</a>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-                </div>
+            </div>
+
+            <!-- Colonne droite : plan 3D -->
+            <div class="col-md-8 p-0 position-relative">
+                <div id="plan3d" style="width:100%; height:100vh;"></div>
             </div>
         </div>
     </div>
 
-    <!-- Scripts Three.js r125 UMD et Bootstrap -->
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/three@0.125.2/build/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.125.2/examples/js/controls/OrbitControls.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        // --- Scène et caméra ---
+        // --- Scene 3D ---
         const scene = new THREE.Scene();
         scene.background = new THREE.Color(0xbfd1e5);
 
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / 600, 0.1, 1000);
+        const camera = new THREE.PerspectiveCamera(75, document.querySelector(".col-md-8").clientWidth / window.innerHeight, 0.1, 1000);
         camera.position.set(5, 5, 10);
 
         const renderer = new THREE.WebGLRenderer({ antialias: true });
-        renderer.setSize(window.innerWidth, 600);
+        renderer.setSize(document.querySelector(".col-md-8").clientWidth, window.innerHeight);
         document.getElementById('plan3d').appendChild(renderer.domElement);
 
-        // Contrôles (fonctionne sur r125 UMD)
         const controls = new THREE.OrbitControls(camera, renderer.domElement);
 
-        // Lumières
         scene.add(new THREE.AmbientLight(0x404040, 2));
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-        directionalLight.position.set(5, 10, 7).normalize();
-        scene.add(directionalLight);
+        const light = new THREE.DirectionalLight(0xffffff, 1);
+        light.position.set(5, 10, 7).normalize();
+        scene.add(light);
 
-        // Sol (verdure)
-        const groundGeometry = new THREE.PlaneGeometry(20, 20);
-        const groundMaterial = new THREE.MeshLambertMaterial({ color: 0x228B22 });
-        const ground = new THREE.Mesh(groundGeometry, groundMaterial);
+        // --- Sol + route ---
+        const ground = new THREE.Mesh(new THREE.PlaneGeometry(20, 20), new THREE.MeshLambertMaterial({ color: 0x228B22 }));
         ground.rotation.x = -Math.PI / 2;
         scene.add(ground);
 
-        // Route
-        const roadGeometry = new THREE.RingGeometry(10, 10.5, 64);
-        const roadMaterial = new THREE.MeshLambertMaterial({ color: 0x333333, side: THREE.DoubleSide });
-        const road = new THREE.Mesh(roadGeometry, roadMaterial);
+        const road = new THREE.Mesh(new THREE.RingGeometry(10, 10.5, 64), new THREE.MeshLambertMaterial({ color: 0x333333, side: THREE.DoubleSide }));
         road.rotation.x = -Math.PI / 2;
         scene.add(road);
 
-        // Magasins
+        // --- Magasins ---
         const magasins = [];
         const magasinInfos = [
-            { name: "Ali la mode vetements femme", desc: "Boutique de mode tendance.", image: "https://picsum.photos/300/200?1", url: "{{ path('commercants', {categorie: 'mode'}) }}" },
-            { name: "Mohamed linge de maison", desc: "Vêtements accessibles pour tous.", image: "https://picsum.photos/300/200?2", url: "{{ path('commercants', {categorie: 'mode'}) }}" },
-            { name: "Berbere fruit et legumes", desc: "Supermarché et alimentation générale.", image: "https://picsum.photos/300/200?3", url: "{{ path('commercants', {categorie: 'alimentaire'}) }}" },
-            { name: "Nanas coffee", desc: "Café, boissons et gourmandises.", image: "https://picsum.photos/300/200?4", url: "{{ path('commercants', {categorie: 'alimentaire'}) }}" }
+            { name: "Zara", desc: "Boutique de mode tendance.", image: "https://picsum.photos/300/200?1", url: "#", category: "textile" },
+            { name: "H&M", desc: "Vêtements accessibles pour tous.", image: "https://picsum.photos/300/200?2", url: "#", category: "textile" },
+            { name: "Carrefour", desc: "Supermarché et alimentation générale.", image: "https://picsum.photos/300/200?3", url: "#", category: "alimentaire" },
+            { name: "Starbucks", desc: "Café, boissons et gourmandises.", image: "https://picsum.photos/300/200?4", url: "#", category: "alimentaire" },
+            { name: "Ikea", desc: "Articles pour la maison.", image: "https://picsum.photos/300/200?5", url: "#", category: "bazar" },
+            { name: "Tapis du Monde", desc: "Tapis et textiles orientaux.", image: "https://picsum.photos/300/200?6", url: "#", category: "tapis" },
+            { name: "Bijouterie Luxe", desc: "Bijoux et accessoires haut de gamme.", image: "https://picsum.photos/300/200?7", url: "#", category: "bijoux" },
+            { name: "Parfumerie Fine", desc: "Parfums et cosmétiques.", image: "https://picsum.photos/300/200?8", url: "#", category: "parfums" }
         ];
 
-        const magasinGeometry = new THREE.BoxGeometry(2, 1, 2);
-        const colors = [0xff6666, 0x66ccff, 0x99ff99, 0xffcc66];
+        const categoryColors = {
+            "alimentaire": 0xffcc66,
+            "textile": 0x66ccff,
+            "bazar": 0x99ff99,
+            "vaisselles": 0xff9999,
+            "bijoux": 0xff66ff,
+            "parfums": 0xcc66ff,
+            "tissus": 0x66ffcc,
+            "tapis": 0xff9966
+        };
+
+        const magasinGeometry = new THREE.BoxGeometry(2,1,2);
+        const glowMeshes = [];
+        let selectedCube = null;
 
         for (let i = 0; i < magasinInfos.length; i++) {
-            const material = new THREE.MeshLambertMaterial({ color: colors[i] });
-            const cube = new THREE.Mesh(magasinGeometry, material);
-            cube.position.set((i % 2) * 3 - 1.5, 0.5, Math.floor(i / 2) * 3 - 1.5);
+            const color = categoryColors[magasinInfos[i].category] || 0xffffff;
+            const cube = new THREE.Mesh(
+                magasinGeometry,
+                new THREE.MeshLambertMaterial({ color: color })
+            );
+            cube.position.set((i % 3) * 3 - 3, 0.5, Math.floor(i / 3) * 3 - 3);
             cube.userData = magasinInfos[i];
             scene.add(cube);
             magasins.push(cube);
+
+            // Zone colorée au sol
+            const zone = new THREE.Mesh(
+                new THREE.PlaneGeometry(2.5, 2.5),
+                new THREE.MeshBasicMaterial({ color: color, transparent: true, opacity: 0.2 })
+            );
+            zone.rotation.x = -Math.PI / 2;
+            zone.position.set(cube.position.x, 0.01, cube.position.z);
+            scene.add(zone);
+
+            // Glow autour du cube
+            const glowMat = new THREE.MeshBasicMaterial({ color: 0xffff00, transparent:true, opacity:0.2 });
+            const glow = new THREE.Mesh(cube.geometry.clone(), glowMat);
+            glow.position.copy(cube.position);
+            glow.scale.set(1.1,1.1,1.1);
+            scene.add(glow);
+            glowMeshes.push(glow);
         }
 
-        // Raycaster pour clic
+        // --- Highlight cube sélectionné ---
+        let highlight;
+        function setHighlight(mesh) {
+            if (highlight) scene.remove(highlight);
+            if (!mesh) return;
+            const edges = new THREE.EdgesGeometry(mesh.geometry);
+            highlight = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0xffff00, linewidth: 3 }));
+            highlight.position.copy(mesh.position);
+            scene.add(highlight);
+        }
+
+        // --- Affichage fiche commerçant + agrandissement cube ---
+        function showMagasin(mesh) {
+            const m = mesh.userData;
+            document.getElementById("magasinTitle").innerText = m.name;
+            document.getElementById("magasinImage").src = m.image;
+            document.getElementById("magasinDescription").innerText = m.desc;
+            document.getElementById("magasinLink").href = m.url;
+            document.getElementById("magasinDetails").style.display = "block";
+
+            // Zoom caméra
+            camera.position.set(mesh.position.x + 5, 5, mesh.position.z + 5);
+            controls.target.copy(mesh.position);
+
+            setHighlight(mesh);
+
+            // Réinitialiser ancien cube
+            if(selectedCube && selectedCube !== mesh) selectedCube.scale.set(1,1,1);
+
+            // Agrandir le cube sélectionné
+            mesh.scale.set(1.5,1.5,1.5);
+            selectedCube = mesh;
+        }
+
+        // --- Liste et autocomplétion ---
+        const listContainer = document.getElementById("commercantList");
+        const searchInput = document.getElementById("searchInput");
+        const autocompleteList = document.getElementById("autocompleteList");
+        const categoryFilter = document.getElementById("categoryFilter");
+
+        function updateList(filter="", category="") {
+            listContainer.innerHTML = "";
+            magasinInfos
+                .filter(m => m.name.toLowerCase().includes(filter.toLowerCase()) &&
+                    (category === "" || m.category === category))
+                .forEach((mag,i) => {
+                    const li = document.createElement("li");
+                    li.className = "list-group-item list-group-item-action";
+                    li.innerText = mag.name + " (" + mag.category + ")";
+                    li.onclick = () => showMagasin(magasins[i]);
+                    listContainer.appendChild(li);
+                });
+        }
+        updateList();
+
+        categoryFilter.addEventListener("change", () => {
+            updateList(searchInput.value, categoryFilter.value);
+        });
+
+        searchInput.addEventListener("input", () => {
+            const query = searchInput.value.toLowerCase();
+            const category = categoryFilter.value;
+            autocompleteList.innerHTML = '';
+
+            if (query.length > 0) {
+                const results = magasinInfos.filter(m =>
+                    m.name.toLowerCase().includes(query) &&
+                    (category === "" || m.category === category)
+                );
+
+                if (results.length > 0) {
+                    autocompleteList.style.display = 'block';
+                    results.forEach(mag => {
+                        const li = document.createElement("li");
+                        li.className = "list-group-item";
+                        li.innerText = mag.name + " (" + mag.category + ")";
+                        li.onclick = () => {
+                            searchInput.value = mag.name;
+                            autocompleteList.style.display = "none";
+                            showMagasin(magasins[magasinInfos.indexOf(mag)]);
+                        };
+                        autocompleteList.appendChild(li);
+                    });
+                } else autocompleteList.style.display = 'none';
+            } else {
+                updateList("", category);
+                autocompleteList.style.display = 'none';
+            }
+        });
+
+        // --- Clic sur cube ---
         const raycaster = new THREE.Raycaster();
         const mouse = new THREE.Vector2();
 
-        function onMouseClick(event) {
+        renderer.domElement.addEventListener("click", (event)=>{
             const rect = renderer.domElement.getBoundingClientRect();
-            mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-            mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
-
-            raycaster.setFromCamera(mouse, camera);
+            mouse.x = ((event.clientX - rect.left)/rect.width)*2-1;
+            mouse.y = -((event.clientY - rect.top)/rect.height)*2+1;
+            raycaster.setFromCamera(mouse,camera);
             const intersects = raycaster.intersectObjects(magasins);
+            if(intersects.length>0) showMagasin(intersects[0].object);
+        });
 
-            if (intersects.length > 0) {
-                const magasin = intersects[0].object.userData;
-
-                // Remplir modal
-                document.getElementById('magasinModalLabel').innerText = magasin.name;
-                document.getElementById('magasinImage').src = magasin.image;
-                document.getElementById('magasinDescription').innerText = magasin.desc;
-                document.getElementById('magasinLink').href = magasin.url;
-
-                // Ouvrir modal
-                const modal = new bootstrap.Modal(document.getElementById('magasinModal'));
-                modal.show();
-            }
+        // --- Animation glow et bounce ---
+        let glowPhase=0, bouncePhase=0;
+        function animateGlow() {
+            glowPhase+=0.05;
+            glowMeshes.forEach(glow=>glow.material.opacity=0.1 + Math.abs(Math.sin(glowPhase))*0.2);
+        }
+        function animateBounce() {
+            bouncePhase+=0.03;
+            magasins.forEach((cube,i)=>cube.position.y=0.5 + Math.sin(bouncePhase+i)*0.05);
         }
 
-        window.addEventListener('click', onMouseClick);
-
-        // Animation
         function animate() {
             requestAnimationFrame(animate);
+            animateGlow();
+            animateBounce();
             controls.update();
-            renderer.render(scene, camera);
+            renderer.render(scene,camera);
         }
         animate();
 
-        // Responsive
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / 600;
+        window.addEventListener("resize", ()=>{
+            camera.aspect = document.querySelector(".col-md-8").clientWidth / window.innerHeight;
             camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, 600);
+            renderer.setSize(document.querySelector(".col-md-8").clientWidth, window.innerHeight);
         });
     </script>
 {% endblock %}
