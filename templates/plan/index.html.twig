@@ -25,7 +25,7 @@
                     </select>
                 </div>
 
-                <!-- Barre de recherche premium -->
+                <!-- Barre de recherche -->
                 <div class="search-box mb-4 position-relative">
                     <div class="input-group">
           <span class="input-group-text bg-white border-end-0 rounded-start-pill">
@@ -39,7 +39,7 @@
                 <!-- Liste des commerçants -->
                 <ul id="commercantList" class="list-group mb-4"></ul>
 
-                <!-- Fiche commerçant premium -->
+                <!-- Fiche commerçant -->
                 <div id="magasinDetails" class="card shadow-lg border-0 rounded-3" style="display:none;">
                     <img id="magasinImage" src="" alt="Image magasin" class="card-img-top rounded-top" style="max-height:220px; object-fit:cover;">
                     <div class="card-body text-center">
@@ -57,222 +57,14 @@
         </div>
     </div>
 
-    <!-- Scripts -->
+
+
     <script src="https://cdn.jsdelivr.net/npm/three@0.125.2/build/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.125.2/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.125.2/examples/js/renderers/CSS2DRenderer.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tweenjs/tween.js@18.6.4/dist/tween.umd.js"></script>
 
-    <script>
-        // --- Scene 3D ---
-        const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0xbfd1e5);
+    <script src="{{ asset('js/plan3d_v1.js') }}"></script>
+    <script src="{{ asset('js/plan3d_ui_v1.js') }}"></script>
 
-        const camera = new THREE.PerspectiveCamera(75, document.querySelector(".col-md-8").clientWidth / window.innerHeight, 0.1, 1000);
-        camera.position.set(5, 5, 10);
-
-        const renderer = new THREE.WebGLRenderer({ antialias: true });
-        renderer.setSize(document.querySelector(".col-md-8").clientWidth, window.innerHeight);
-        document.getElementById('plan3d').appendChild(renderer.domElement);
-
-        const controls = new THREE.OrbitControls(camera, renderer.domElement);
-
-        scene.add(new THREE.AmbientLight(0x404040, 2));
-        const light = new THREE.DirectionalLight(0xffffff, 1);
-        light.position.set(5, 10, 7).normalize();
-        scene.add(light);
-
-        // --- Sol + route ---
-        const ground = new THREE.Mesh(new THREE.PlaneGeometry(20, 20), new THREE.MeshLambertMaterial({ color: 0x228B22 }));
-        ground.rotation.x = -Math.PI / 2;
-        scene.add(ground);
-
-        const road = new THREE.Mesh(new THREE.RingGeometry(10, 10.5, 64), new THREE.MeshLambertMaterial({ color: 0x333333, side: THREE.DoubleSide }));
-        road.rotation.x = -Math.PI / 2;
-        scene.add(road);
-
-        // --- Magasins ---
-        const magasins = [];
-        const magasinInfos = [
-            { name: "Zara", desc: "Boutique de mode tendance.", image: "https://picsum.photos/300/200?1", url: "#", category: "textile" },
-            { name: "H&M", desc: "Vêtements accessibles pour tous.", image: "https://picsum.photos/300/200?2", url: "#", category: "textile" },
-            { name: "Carrefour", desc: "Supermarché et alimentation générale.", image: "https://picsum.photos/300/200?3", url: "#", category: "alimentaire" },
-            { name: "Starbucks", desc: "Café, boissons et gourmandises.", image: "https://picsum.photos/300/200?4", url: "#", category: "alimentaire" },
-            { name: "Ikea", desc: "Articles pour la maison.", image: "https://picsum.photos/300/200?5", url: "#", category: "bazar" },
-            { name: "Tapis du Monde", desc: "Tapis et textiles orientaux.", image: "https://picsum.photos/300/200?6", url: "#", category: "tapis" },
-            { name: "Bijouterie Luxe", desc: "Bijoux et accessoires haut de gamme.", image: "https://picsum.photos/300/200?7", url: "#", category: "bijoux" },
-            { name: "Parfumerie Fine", desc: "Parfums et cosmétiques.", image: "https://picsum.photos/300/200?8", url: "#", category: "parfums" }
-        ];
-
-        const categoryColors = {
-            "alimentaire": 0xffcc66,
-            "textile": 0x66ccff,
-            "bazar": 0x99ff99,
-            "vaisselles": 0xff9999,
-            "bijoux": 0xff66ff,
-            "parfums": 0xcc66ff,
-            "tissus": 0x66ffcc,
-            "tapis": 0xff9966
-        };
-
-        const magasinGeometry = new THREE.BoxGeometry(2,1,2);
-        const glowMeshes = [];
-        let selectedCube = null;
-
-        for (let i = 0; i < magasinInfos.length; i++) {
-            const color = categoryColors[magasinInfos[i].category] || 0xffffff;
-            const cube = new THREE.Mesh(
-                magasinGeometry,
-                new THREE.MeshLambertMaterial({ color: color })
-            );
-            cube.position.set((i % 3) * 3 - 3, 0.5, Math.floor(i / 3) * 3 - 3);
-            cube.userData = magasinInfos[i];
-            scene.add(cube);
-            magasins.push(cube);
-
-            // Zone colorée au sol
-            const zone = new THREE.Mesh(
-                new THREE.PlaneGeometry(2.5, 2.5),
-                new THREE.MeshBasicMaterial({ color: color, transparent: true, opacity: 0.2 })
-            );
-            zone.rotation.x = -Math.PI / 2;
-            zone.position.set(cube.position.x, 0.01, cube.position.z);
-            scene.add(zone);
-
-            // Glow autour du cube
-            const glowMat = new THREE.MeshBasicMaterial({ color: 0xffff00, transparent:true, opacity:0.2 });
-            const glow = new THREE.Mesh(cube.geometry.clone(), glowMat);
-            glow.position.copy(cube.position);
-            glow.scale.set(1.1,1.1,1.1);
-            scene.add(glow);
-            glowMeshes.push(glow);
-        }
-
-        // --- Highlight cube sélectionné ---
-        let highlight;
-        function setHighlight(mesh) {
-            if (highlight) scene.remove(highlight);
-            if (!mesh) return;
-            const edges = new THREE.EdgesGeometry(mesh.geometry);
-            highlight = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0xffff00, linewidth: 3 }));
-            highlight.position.copy(mesh.position);
-            scene.add(highlight);
-        }
-
-        // --- Affichage fiche commerçant + agrandissement cube ---
-        function showMagasin(mesh) {
-            const m = mesh.userData;
-            document.getElementById("magasinTitle").innerText = m.name;
-            document.getElementById("magasinImage").src = m.image;
-            document.getElementById("magasinDescription").innerText = m.desc;
-            document.getElementById("magasinLink").href = m.url;
-            document.getElementById("magasinDetails").style.display = "block";
-
-            // Zoom caméra
-            camera.position.set(mesh.position.x + 5, 5, mesh.position.z + 5);
-            controls.target.copy(mesh.position);
-
-            setHighlight(mesh);
-
-            // Réinitialiser ancien cube
-            if(selectedCube && selectedCube !== mesh) selectedCube.scale.set(1,1,1);
-
-            // Agrandir le cube sélectionné
-            mesh.scale.set(1.5,1.5,1.5);
-            selectedCube = mesh;
-        }
-
-        // --- Liste et autocomplétion ---
-        const listContainer = document.getElementById("commercantList");
-        const searchInput = document.getElementById("searchInput");
-        const autocompleteList = document.getElementById("autocompleteList");
-        const categoryFilter = document.getElementById("categoryFilter");
-
-        function updateList(filter="", category="") {
-            listContainer.innerHTML = "";
-            magasinInfos
-                .filter(m => m.name.toLowerCase().includes(filter.toLowerCase()) &&
-                    (category === "" || m.category === category))
-                .forEach((mag,i) => {
-                    const li = document.createElement("li");
-                    li.className = "list-group-item list-group-item-action";
-                    li.innerText = mag.name + " (" + mag.category + ")";
-                    li.onclick = () => showMagasin(magasins[i]);
-                    listContainer.appendChild(li);
-                });
-        }
-        updateList();
-
-        categoryFilter.addEventListener("change", () => {
-            updateList(searchInput.value, categoryFilter.value);
-        });
-
-        searchInput.addEventListener("input", () => {
-            const query = searchInput.value.toLowerCase();
-            const category = categoryFilter.value;
-            autocompleteList.innerHTML = '';
-
-            if (query.length > 0) {
-                const results = magasinInfos.filter(m =>
-                    m.name.toLowerCase().includes(query) &&
-                    (category === "" || m.category === category)
-                );
-
-                if (results.length > 0) {
-                    autocompleteList.style.display = 'block';
-                    results.forEach(mag => {
-                        const li = document.createElement("li");
-                        li.className = "list-group-item";
-                        li.innerText = mag.name + " (" + mag.category + ")";
-                        li.onclick = () => {
-                            searchInput.value = mag.name;
-                            autocompleteList.style.display = "none";
-                            showMagasin(magasins[magasinInfos.indexOf(mag)]);
-                        };
-                        autocompleteList.appendChild(li);
-                    });
-                } else autocompleteList.style.display = 'none';
-            } else {
-                updateList("", category);
-                autocompleteList.style.display = 'none';
-            }
-        });
-
-        // --- Clic sur cube ---
-        const raycaster = new THREE.Raycaster();
-        const mouse = new THREE.Vector2();
-
-        renderer.domElement.addEventListener("click", (event)=>{
-            const rect = renderer.domElement.getBoundingClientRect();
-            mouse.x = ((event.clientX - rect.left)/rect.width)*2-1;
-            mouse.y = -((event.clientY - rect.top)/rect.height)*2+1;
-            raycaster.setFromCamera(mouse,camera);
-            const intersects = raycaster.intersectObjects(magasins);
-            if(intersects.length>0) showMagasin(intersects[0].object);
-        });
-
-        // --- Animation glow et bounce ---
-        let glowPhase=0, bouncePhase=0;
-        function animateGlow() {
-            glowPhase+=0.05;
-            glowMeshes.forEach(glow=>glow.material.opacity=0.1 + Math.abs(Math.sin(glowPhase))*0.2);
-        }
-        function animateBounce() {
-            bouncePhase+=0.03;
-            magasins.forEach((cube,i)=>cube.position.y=0.5 + Math.sin(bouncePhase+i)*0.05);
-        }
-
-        function animate() {
-            requestAnimationFrame(animate);
-            animateGlow();
-            animateBounce();
-            controls.update();
-            renderer.render(scene,camera);
-        }
-        animate();
-
-        window.addEventListener("resize", ()=>{
-            camera.aspect = document.querySelector(".col-md-8").clientWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(document.querySelector(".col-md-8").clientWidth, window.innerHeight);
-        });
-    </script>
 {% endblock %}

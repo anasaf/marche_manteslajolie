@@ -10,7 +10,7 @@
         .navbar { padding: 1rem 2rem; }
         .hero {
             height: 85vh;
-            background: url('https://picsum.photos/1920/1080?blur=2') center/cover no-repeat;
+            background: url("{{ asset('images/home'~random(9)~'.jpg') }}") center/cover no-repeat;
             display: flex;
             align-items: center;
             justify-content: center;

@@ -45,3 +45,8 @@
     position: relative;
     z-index: 2;
 }
+#plan3d {
+    width: 100%;
+    height: 100vh;     /* sinon le canvas est trop petit */
+    display: block;
+}

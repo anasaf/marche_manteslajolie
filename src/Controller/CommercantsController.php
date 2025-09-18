@@ -13,16 +13,16 @@ class CommercantsController extends AbstractController
         // Exemple statique (à remplacer plus tard par une base de données)
         $commercants = [
             'mode' => [
-                ['nom' => 'Ali vetements femme', 'image' => 'https://picsum.photos/400/250?random=1'],
-                ['nom' => 'Mohamed Ligne de maison', 'image' => 'https://picsum.photos/400/250?random=2'],
+                ['nom' => 'Ali vetements femme', 'image' => 'robes_femmes.jpeg'],
+                ['nom' => 'Mohamed Ligne de maison', 'image' => 'linge_maison.jpeg'],
             ],
             'alimentaire' => [
-                ['nom' => 'Berbere fruit legumes', 'image' => 'https://picsum.photos/400/250?random=3'],
-                ['nom' => 'Nanas Coffee', 'image' => 'https://picsum.photos/400/250?random=4'],
+                ['nom' => 'Berbere fruit legumes', 'image' => 'fruit_legumes.jpeg'],
+                ['nom' => 'Nanas Coffee', 'image' => 'coffee.jpg'],
             ],
             'services' => [
-                ['nom' => 'Jibby et Nordine a votre ecoute', 'image' => 'https://picsum.photos/400/250?random=5'],
-                ['nom' => 'Mediateur mantes', 'image' => 'https://picsum.photos/400/250?random=6'],
+                ['nom' => 'Jibby et Nordine a votre ecoute', 'image' => 'service.png'],
+                ['nom' => 'Mediateur mantes', 'image' => 'mediateur.jpg'],
             ]
         ];
 

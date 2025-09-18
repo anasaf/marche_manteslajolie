@@ -21,7 +21,7 @@
             {% for commercant in commercants %}
                 <div class="col-md-4 mb-4">
                     <div class="card shadow-sm h-100">
-                        <img src="{{ commercant.image }}" class="card-img-top" alt="{{ commercant.nom }}">
+                        <img src="{{ asset('images/'~commercant.image) }}" class="card-img-top" alt="{{ commercant.nom }}">
                         <div class="card-body text-center">
                             <h5 class="card-title">{{ commercant.nom }}</h5>
                             <a href="#" class="btn btn-primary">Voir en détail</a>
