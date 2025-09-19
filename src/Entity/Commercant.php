@@ -4,8 +4,8 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use App\Entity\Trait\TimestampableTrait;
-use App\Entity\Trait\BlameableTrait;
+use App\Entity\Traits\TimestampableTrait;
+use App\Entity\Traits\BlameableTrait;
 
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]

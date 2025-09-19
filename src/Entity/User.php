@@ -4,8 +4,8 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use App\Entity\Trait\TimestampableTrait;
-use App\Entity\Trait\BlameableTrait;
+use App\Entity\Traits\TimestampableTrait;
+use App\Entity\Traits\BlameableTrait;
 
 #[ORM\Entity]
 #[ORM\Table(name: 'app_user')]
@@ -41,5 +41,5 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getPassword(): string { return $this->password; }
     public function setPassword(string $password): self { $this->password = $password; return $this; }
 
-    public function eraseCredentials() {}
+    //public function eraseCredentials() {}
 }
