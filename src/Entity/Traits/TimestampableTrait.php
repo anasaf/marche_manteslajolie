@@ -16,6 +16,9 @@ trait TimestampableTrait
     public function getUpdatedAt(): ?\DateTimeInterface { return $this->updatedAt; }
     public function setUpdatedAt(\DateTimeInterface $dt): self { $this->updatedAt = $dt; return $this; }
 
+    /**
+     * @return void
+     */
     #[ORM\PrePersist]
     public function onPrePersistSetCreatedAt(): void
     {
