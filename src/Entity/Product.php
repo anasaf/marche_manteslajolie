@@ -13,20 +13,20 @@ class Product
     use AccessorTrait;
     #[ORM\Id, ORM\GeneratedValue, ORM\Column(type: 'integer')]
     private ?int $id = null;#[ORM\Column(type: 'string', length: 255)]
-    private string $nom;
+    private string $name;
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $description = null;
 
     #[ORM\Column(type: 'decimal', precision: 10, scale: 2)]
-    private float $prix;
+    private float $price;
     #[ORM\Column(type: 'integer')]
     private int $stock;
 
-    #[ORM\ManyToOne(targetEntity: Commercant::class, inversedBy: 'produits')]
-    private ?Commercant $commercant = null;
+    #[ORM\ManyToOne(targetEntity: Merchant::class, inversedBy: 'produits')]
+    private ?Merchant $merchant = null;
 
     #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: 'produits')]
-    private ?Category $categorie = null;
+    private ?Category $category = null;
 
     // === Upload image ===
     #[Vich\UploadableField(mapping: 'products', fileNameProperty: 'imageName')]
@@ -52,9 +52,10 @@ class Product
         return $this->imageFile;
     }
 
-    public function setImageName(?string $imageName): void
+    public function setImageName(?string $imageName): self
     {
         $this->imageName = $imageName;
+        return $this;
     }
 
     public function getImageName(): ?string
@@ -73,25 +74,28 @@ class Product
     /**
      * @param int|null $id
      */
-    public function setId(?int $id): void
+    public function setId(?int $id): self
     {
         $this->id = $id;
+        return $this;
     }
 
     /**
      * @return string
      */
-    public function getNom(): string
+    public function getName(): string
     {
-        return $this->nom;
+        return $this->name;
     }
 
     /**
-     * @param string $nom
+     * @param string $name
+     * @return Product
      */
-    public function setNom(string $nom): void
+    public function setName(string $name): Product
     {
-        $this->nom = $nom;
+        $this->name = $name;
+        return $this;
     }
 
     /**
@@ -104,27 +108,14 @@ class Product
 
     /**
      * @param string|null $description
+     * @return Product
      */
-    public function setDescription(?string $description): void
+    public function setDescription(?string $description): Product
     {
         $this->description = $description;
+        return $this;
     }
 
-    /**
-     * @return float
-     */
-    public function getPrix(): float
-    {
-        return (float) $this->prix;
-    }
-
-    /**
-     * @param float $prix
-     */
-    public function setPrix(float $prix): void
-    {
-        $this->prix = $prix;
-    }
 
     /**
      * @return int
@@ -136,59 +127,73 @@ class Product
 
     /**
      * @param int $stock
+     * @return Product
      */
-    public function setStock(int $stock): void
+    public function setStock(int $stock): Product
     {
         $this->stock = $stock;
+        return $this;
     }
 
     /**
-     * @return Commercant|null
+     * @return Merchant|null
      */
-    public function getCommercant(): ?Commercant
+    public function getMerchant(): ?Merchant
     {
-        return $this->commercant;
+        return $this->merchant;
     }
 
     /**
-     * @param Commercant|null $commercant
+     * @param Merchant|null $merchant
+     * @return Product
      */
-    public function setCommercant(?Commercant $commercant): void
+    public function setMerchant(?Merchant $merchant): Product
     {
-        $this->commercant = $commercant;
+        $this->merchant = $merchant;
+        return $this;
     }
 
     /**
      * @return Category|null
      */
-    public function getCategorie(): ?Category
+    public function getCategory(): ?Category
     {
-        return $this->categorie;
+        return $this->category;
     }
 
     /**
-     * @param Category|null $categorie
+     * @param Category $category
      */
-    public function setCategorie(?Category $categorie): void
+    public function setCategory(?Category $category): self
     {
-        $this->categorie = $categorie;
+        $this->category = $category;
+        return $this;
     }
 
     /**
-     * @return \DateTimeInterface|null
+     * @param float $price
+     * @return Product
      */
-    public function getUpdatedAt(): ?\DateTimeInterface
+    public function setPrice(float $price): Product
     {
-        return $this->updatedAt;
+        $this->price = $price;
+        return $this;
     }
 
     /**
-     * @param \DateTimeInterface|null $updatedAt
+     * @return float
      */
-    public function setUpdatedAt(?\DateTimeInterface $updatedAt): void
+    public function getPrice(): float
     {
-        $this->updatedAt = $updatedAt;
+        return $this->price;
     }
 
+    public function isNew(){
+        return true;
+    }
+
+    public function getRating(){
+        return 2;
+    }
 
 }

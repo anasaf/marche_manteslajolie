@@ -9,15 +9,14 @@ use App\Entity\Traits\TimestampableTrait;
 use App\Entity\Traits\BlameableTrait;
 
 #[ORM\Entity]
-#[ORM\Table(name: 'app_user')]
+#[ORM\Table(name: 'user')]
 #[ORM\HasLifecycleCallbacks]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
-    use TimestampableTrait, BlameableTrait, AccessorTrait;
-    #[Setter] #[Getter]
+    use TimestampableTrait, BlameableTrait;
+
     #[ORM\Id, ORM\GeneratedValue, ORM\Column(type: 'integer')]
     private ?int $id = null;
-    #[Setter] #[Getter]
     #[ORM\Column(type: 'string', length: 180, unique: true)]
     private string $email;
 
@@ -28,12 +27,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string')]
     private string $password;
 
+
+    #[ORM\Column(type: "string", length: 100)]
+    private string $firstName;
+
+    #[ORM\Column(type: "string", length: 100)]
+    private string $lastName;
+
+    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    private ?Address $address = null;
+
     // getters / setters
-
-    //public function getId(): ?int { return $this->id; }
-    //public function getEmail(): string { return $this->email; }
-    //public function setEmail(string $email): self { $this->email = $email; return $this; }
-
     public function getUserIdentifier(): string { return $this->email; }
     public function getRoles(): array { return array_unique([...$this->roles]); }
     public function setRoles(array $roles): self { $this->roles = $roles; return $this; }
@@ -46,5 +50,43 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // TODO: Implement eraseCredentials() method.
     }
+
+    /**
+     * @return int|null
+     */
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param int|null $id
+     * @return User
+     */
+    public function setId(?int $id): User
+    {
+        $this->id = $id;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEmail(): string
+    {
+        return $this->email;
+    }
+
+    /**
+     * @param string $email
+     * @return User
+     */
+    public function setEmail(string $email): User
+    {
+        $this->email = $email;
+        return $this;
+    }
+
+
 
 }

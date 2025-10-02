@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // éléments UI
     const searchInput = document.getElementById('searchInput');
     const autocompleteList = document.getElementById('autocompleteList');
-    const listContainer = document.getElementById('commercantList');
+    const listContainer = document.getElementById('merchantList');
     const categoryFilter = document.getElementById('categoryFilter');
 
     // attendre que PLAN3D soit prêt

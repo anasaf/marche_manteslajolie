@@ -1,7 +1,7 @@
 <?php
 namespace App\Controller\Admin;
 
-use App\Entity\Commercant;
+use App\Entity\merchant;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
@@ -10,11 +10,11 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 
 use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
 
-class CommercantCrudController extends AbstractCrudController
+class MerchantCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
     {
-        return Commercant::class;
+        return Merchant::class;
     }
 
     public function configureFields(string $pageName): iterable
@@ -29,7 +29,7 @@ class CommercantCrudController extends AbstractCrudController
 
             // logo upload
          //   VichImageField::new('logoFile')->onlyOnForms(),
-            ImageField::new('logoName')->setBasePath('/uploads/commercants')->onlyOnIndex(),
+            ImageField::new('logoName')->setBasePath('/uploads/merchants')->onlyOnIndex(),
 
             ArrayField::new('positionPlan3D')->hideOnIndex(),
         ];

@@ -12,8 +12,15 @@ use App\Entity\Traits\BlameableTrait;
 #[ORM\Entity]
 #[Vich\Uploadable]
 #[ORM\HasLifecycleCallbacks]
-class Commercant
+class Merchant
 {
+    // upload du logo
+
+    #[Vich\UploadableField(mapping: 'merchants', fileNameProperty: 'logoName')]
+    private ?File $logoFile = null;
+    #[ORM\Column(type:'string', length:255, nullable:true)]
+    private ?string $logoName = null;
+
     use TimestampableTrait;
     use BlameableTrait;
 
@@ -21,7 +28,7 @@ class Commercant
     private ?int $id = null;
 
     #[ORM\Column(type:'string', length:150)]
-    private string $name;
+    private ?string $name;
 
     #[ORM\Column(type:'text', nullable:true)]
     private ?string $description = null;
@@ -39,23 +46,23 @@ class Commercant
     #[ORM\JoinColumn(nullable: true, onDelete: "SET NULL")]
     private ?Category $category = null;
 
-    // upload du logo
-    #[Vich\UploadableField(mapping: 'commercants', fileNameProperty: 'logoName')]
-    private ?File $logoFile = null;
-
-    #[ORM\Column(type:'string', length:255, nullable:true)]
-    private ?string $logoName = null;
-
     #[ORM\Column(type:'json', nullable:true)]
     private ?array $positionPlan3D = null; // {x, y, z}
 
-    #[ORM\OneToMany(mappedBy:'commercant', targetEntity: Product::class, cascade:['persist','remove'])]
+    #[ORM\OneToMany(mappedBy:'merchant', targetEntity: Product::class, cascade:['persist','remove'])]
     private Collection $products;
+
+    #[ORM\ManyToOne(targetEntity: Address::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private Address $address;
 
     public function __construct(){ $this->products = new ArrayCollection(); }
 
     // === getters/setters ===
-
+    public function setId($id){
+        $this->id = $id;
+        return $this;
+    }
     public function getId(): ?int { return $this->id; }
     public function getName(): string { return $this->name; }
     public function setName(string $n): self { $this->name = $n; return $this; }
@@ -71,7 +78,12 @@ class Commercant
     public function setCategory(?Category $c): self { $this->category = $c; return $this; }
 
     public function getProducts(): Collection { return $this->products; }
+    public function addProducts($products){
 
+        $this->products->add($products);
+
+        return $this;
+    }
     // logo upload
     public function setLogoFile(?File $file = null): void
     {
@@ -85,4 +97,25 @@ class Commercant
 
     public function getPositionPlan3D(): ?array { return $this->positionPlan3D; }
     public function setPositionPlan3D(?array $pos): self { $this->positionPlan3D = $pos; return $this; }
+
+    /**
+     * @return Address
+     */
+    public function getAddress(): Address
+    {
+        return $this->address;
+    }
+
+    /**
+     * @param Address $address
+     * @return Merchant
+     */
+    public function setAddress(Address $address): Merchant
+    {
+        $this->address = $address;
+
+        return $this;
+    }
+
+
 }

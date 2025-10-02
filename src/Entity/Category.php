@@ -28,5 +28,16 @@ class Category
     public function getId(): ?int { return $this->id; }
     public function getName(): string { return $this->name; }
     public function setName(string $n): self { $this->name = $n; return $this; }
+
     public function getProducts(): Collection { return $this->products; }
+
+    /**
+     * @param int|null $id
+     * @return Category
+     */
+    public function setId(?int $id): Category
+    {
+        $this->id = $id;
+        return $this;
+    }
 }

@@ -1,0 +1,23 @@
+{# templates/stripe_simple/index.html.twig #}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Test Stripe Simple</title>
+</head>
+<body>
+<h1>Test Stripe - Lien direct</h1>
+
+{% for message in app.flashes('notice') %}
+    <div style="background-color: #e7f3fe; border-left: 6px solid #2196F3; padding: 10px;">
+        {{ message }}
+    </div>
+{% endfor %}
+
+<p>Cliquez sur le lien ci-dessous pour payer avec Stripe:</p>
+
+<a href="{{ path('checkout') }}" style="display: inline-block; padding: 10px 20px; background-color: #635BFF; color: white; text-decoration: none; border-radius: 4px;">
+    Payer 20€ avec Stripe
+</a>
+</body>
+</html>

@@ -8,6 +8,12 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install pdo pdo_pgsql
 
 
+# Installer Node.js et NPM (version LTS)
+RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - \
+    && apt-get install -y nodejs
+
+
+# Installer Symfony Encore (JS/CSS)
 
 # Installe Composer depuis l'image officielle
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer

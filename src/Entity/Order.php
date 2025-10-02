@@ -1,6 +1,8 @@
 <?php
 namespace App\Entity;
 
+use App\Entity\OrderItem;
+use App\Entity\Payment;
 use App\Entity\Traits\TimestampableTrait;
 use App\Entity\Traits\BlameableTrait;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -18,6 +20,9 @@ class Order
     #[ORM\Id, ORM\GeneratedValue, ORM\Column(type: 'integer')]
     private ?int $id = null;
 
+    #[ORM\Column(type: 'string', length: 50, unique: true)]
+    private string $reference;
+
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: true, onDelete: "SET NULL")]
     private ?User $user = null;
@@ -27,6 +32,15 @@ class Order
 
     #[ORM\Column(type: 'decimal', precision: 10, scale: 2)]
     private string $total = '0.00';
+
+    #[ORM\Column(type: 'string', length: 8, options: ['default' => 'EUR'])]
+    private string $currency = 'EUR';
+
+    #[ORM\OneToMany(mappedBy: 'order', targetEntity: \App\Entity\Payment::class, cascade: ['persist'], orphanRemoval: true)]
+    private Collection $payments;
+
+    #[ORM\Column(type: 'integer')]
+    private int $totalCents;
 
     #[ORM\OneToMany(mappedBy: 'order', targetEntity: OrderItem::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $items;

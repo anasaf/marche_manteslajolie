@@ -12,6 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Cart
 {
     use TimestampableTrait;
+
     use BlameableTrait;
 
     #[ORM\Id, ORM\GeneratedValue, ORM\Column(type: 'integer')]
@@ -21,13 +22,26 @@ class Cart
     #[ORM\JoinColumn(nullable: true, onDelete: "SET NULL")]
     private ?User $user = null;
 
+
+    #[ORM\Column(type: 'string', length: 64, unique: true)]
+    private string $token;
+
     #[ORM\Column(type: 'string', length: 20)]
     private string $status = 'open'; // open, checked_out, converted
 
     #[ORM\OneToMany(mappedBy: 'cart', targetEntity: CartItem::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $items;
 
-    public function __construct() { $this->items = new ArrayCollection(); }
+
+
+    public function __construct(string $token) {
+
+        $this->items = new ArrayCollection();
+        $this->token = $token;
+        $this->lines = new ArrayCollection();
+        $this->createdAt = new \DateTimeImmutable();
+
+    }
 
     public function getId(): ?int { return $this->id; }
     public function getUser(): ?User { return $this->user; }
@@ -59,4 +73,13 @@ class Cart
     public function getTotal(): float {
         return array_sum(array_map(fn($item) => $item->getSubtotal(), $this->items->toArray()));
     }
+
+    /**
+     * @return string
+     */
+    public function getToken(): string
+    {
+        return $this->token;
+    }
+
 }

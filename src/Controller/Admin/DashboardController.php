@@ -2,7 +2,7 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\Commercant;
+use App\Entity\Merchant;
 use App\Entity\Product;
 use App\Entity\Category;
 use App\Entity\Order;
@@ -20,7 +20,7 @@ class DashboardController extends AbstractDashboardController
     public function index(): Response
     {
         $adminUrlGenerator = $this->container->get(AdminUrlGenerator::class);
-        return $this->redirect($adminUrlGenerator->setController(CommercantCrudController::class)->generateUrl());
+        return $this->redirect($adminUrlGenerator->setController(MerchantCrudController::class)->generateUrl());
     }
 
     public function configureDashboard(): Dashboard
@@ -34,7 +34,7 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
 
         yield MenuItem::section('Gestion des Commerçants & Produits');
-        yield MenuItem::linkToCrud('Commerçants', 'fas fa-store', Commercant::class);
+        yield MenuItem::linkToCrud('Commerçants', 'fas fa-store', Merchant::class);
         yield MenuItem::linkToCrud('Produits', 'fas fa-box', Product::class);
         yield MenuItem::linkToCrud('Catégories', 'fas fa-tags', Category::class);
 
