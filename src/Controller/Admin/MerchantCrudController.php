@@ -1,8 +1,9 @@
 <?php
 namespace App\Controller\Admin;
 
-use App\Entity\merchant;
+use App\Entity\Merchant;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
@@ -21,17 +22,12 @@ class MerchantCrudController extends AbstractCrudController
     {
         return [
             TextField::new('name'),
-            TextEditorField::new('description'),
-            TextField::new('adresse'),
+            TextEditorField::new('address'),
+            TextField::new('city'),
             TextField::new('telephone'),
-            TextField::new('email'),
-            AssociationField::new('category'),
-
-            // logo upload
-         //   VichImageField::new('logoFile')->onlyOnForms(),
-            ImageField::new('logoName')->setBasePath('/uploads/merchants')->onlyOnIndex(),
-
-            ArrayField::new('positionPlan3D')->hideOnIndex(),
+            TextField::new('postalecode'),
+            TextField::new('country'),
+            BooleanField::new('isactive'),
         ];
     }
 }

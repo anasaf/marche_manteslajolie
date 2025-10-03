@@ -22,10 +22,10 @@ class Product
     #[ORM\Column(type: 'integer')]
     private int $stock;
 
-    #[ORM\ManyToOne(targetEntity: Merchant::class, inversedBy: 'produits')]
+    #[ORM\ManyToOne(targetEntity: Merchant::class, inversedBy: 'products')]
     private ?Merchant $merchant = null;
 
-    #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: 'produits')]
+    #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: 'products')]
     private ?Category $category = null;
 
     // === Upload image ===

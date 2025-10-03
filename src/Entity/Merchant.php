@@ -1,6 +1,7 @@
 <?php
 namespace App\Entity;
 
+use App\Entity\Interfaces\TostringInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -12,7 +13,7 @@ use App\Entity\Traits\BlameableTrait;
 #[ORM\Entity]
 #[Vich\Uploadable]
 #[ORM\HasLifecycleCallbacks]
-class Merchant
+class Merchant implements TostringInterface
 {
     // upload du logo
 
@@ -51,6 +52,11 @@ class Merchant
 
     #[ORM\OneToMany(mappedBy:'merchant', targetEntity: Product::class, cascade:['persist','remove'])]
     private Collection $products;
+
+    public function __toString(): string
+    {
+        return $this->name; // nécessaire pour EasyAdmin
+    }
 
     #[ORM\ManyToOne(targetEntity: Address::class)]
     #[ORM\JoinColumn(nullable: false)]

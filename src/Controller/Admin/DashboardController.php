@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\Address;
 use App\Entity\Merchant;
 use App\Entity\Product;
 use App\Entity\Category;
@@ -35,8 +36,13 @@ class DashboardController extends AbstractDashboardController
 
         yield MenuItem::section('Gestion des Commerçants & Produits');
         yield MenuItem::linkToCrud('Commerçants', 'fas fa-store', Merchant::class);
+
         yield MenuItem::linkToCrud('Produits', 'fas fa-box', Product::class);
+
         yield MenuItem::linkToCrud('Catégories', 'fas fa-tags', Category::class);
+        yield MenuItem::linkToCrud('Utilisateur', 'fas fa-tags', User::class);
+        yield MenuItem::linkToCrud('Adresse', 'fas fa-tags', Address::class);
+
 
     //    yield MenuItem::section('Commandes & Utilisateurs');
       //  yield MenuItem::linkToCrud('Commandes', 'fas fa-shopping-cart', Order::class);

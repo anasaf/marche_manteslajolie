@@ -1,0 +1,80 @@
+easy_admin:
+    design:
+        brand_color: '#4B7BEC'
+
+    entities:
+        User:
+            class: App\Entity\User
+            label: 'Utilisateurs'
+            list:
+                title: 'Liste des utilisateurs'
+                fields: [ 'email', 'firstName', 'lastName', 'roles', 'password', 'address']
+            form:
+                fields:
+                    - 'email'
+                    - 'firstName'
+                    - 'lastName'
+                    - { property: 'roles', type: 'choice', type_options: { choices: { 'Utilisateur': 'ROLE_USER', 'Admin': 'ROLE_ADMIN' }, multiple: true } }
+                    - 'password'
+                    - { property: 'address', type: 'entity', type_options: { class: 'App\Entity\Address', choice_label: 'street' } }
+
+        Address:
+            class: App\Entity\Address
+            label: 'Adresses'
+            list:
+                fields: ['id', 'street', 'city', 'postalCode', 'country']
+            form:
+                fields: ['street', 'city', 'postalCode', 'country']
+
+        Order:
+            class: App\Entity\Order
+            label: 'Commandes'
+            list:
+                fields: ['id', 'status', 'total', 'createdAt', 'user']
+            form:
+                fields: ['status', 'total', 'user']
+
+        Merchant:
+            class: App\Entity\Merchant
+            label: 'Commercant'
+            list:
+                fields: ['id', 'name', 'description', 'phone', 'email', 'address', 'product']
+            form:
+                fields:
+                    - 'name'
+                    - 'description'
+                    - 'phone'
+                    - 'email'
+                    - { property: 'address', type: 'entity', type_options: { class: 'App\Entity\Address', choice_label: 'street' } }
+                    - { property: 'products', type: 'entity', type_options: { class: 'App\Entity\Product', multiple: true, choice_label: 'name' } }
+
+        Cart:
+            class: App\Entity\Cart
+            label: 'Paniers'
+            list:
+                fields: ['id', 'token', 'total']
+            form:
+                fields: ['token', 'total']
+
+        Category:
+            class: App\Entity\Category
+            label: 'Category'
+            list:
+                fields: [ 'name']
+            form:
+                fields: [ 'name']
+
+        Product:
+            class: App\Entity\Product
+            label: 'Produits'
+            list:
+                fields: ['id', 'name', 'price', 'stock', 'marchand', 'category']
+            form:
+                fields:
+                    - 'name'
+                    - 'description'
+                    - 'price'
+                    - 'stock'
+                    - { property: 'merchant', type: 'association', label: 'Marchand' }
+                    - { property: 'category', type: 'association', label: 'Categorie' }
+

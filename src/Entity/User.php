@@ -9,7 +9,7 @@ use App\Entity\Traits\TimestampableTrait;
 use App\Entity\Traits\BlameableTrait;
 
 #[ORM\Entity]
-#[ORM\Table(name: 'user')]
+#[ORM\Table(name: 'sf_user')]
 #[ORM\HasLifecycleCallbacks]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
@@ -17,6 +17,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Id, ORM\GeneratedValue, ORM\Column(type: 'integer')]
     private ?int $id = null;
+
     #[ORM\Column(type: 'string', length: 180, unique: true)]
     private string $email;
 
@@ -30,6 +31,60 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: "string", length: 100)]
     private string $firstName;
+
+    /**
+     * @return string
+     */
+    public function getFirstName(): string
+    {
+        return $this->firstName;
+    }
+
+    /**
+     * @param string $firstName
+     * @return User
+     */
+    public function setFirstName(string $firstName): User
+    {
+        $this->firstName = $firstName;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLastName(): string
+    {
+        return $this->lastName;
+    }
+
+    /**
+     * @param string $lastName
+     * @return User
+     */
+    public function setLastName(string $lastName): User
+    {
+        $this->lastName = $lastName;
+        return $this;
+    }
+
+    /**
+     * @return Address|null
+     */
+    public function getAddress(): ?Address
+    {
+        return $this->address;
+    }
+
+    /**
+     * @param Address|null $address
+     * @return User
+     */
+    public function setAddress(?Address $address): User
+    {
+        $this->address = $address;
+        return $this;
+    }
 
     #[ORM\Column(type: "string", length: 100)]
     private string $lastName;

@@ -22,13 +22,18 @@ class ProductCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         return [
-            TextField::new('nom'),
+            TextField::new('name'),
             TextEditorField::new('description'),
-            MoneyField::new('prix')->setCurrency('EUR'),
+            MoneyField::new('price')->setCurrency('EUR'),
             IntegerField::new('stock'),
-            AssociationField::new('Merchant'),
-            AssociationField::new('categorie'),
-
+         //   AssociationField::new('Merchant'),
+         //   AssociationField::new('categorie'),
+                AssociationField::new('merchant', 'Marchand')
+                    ->setRequired(true)
+                    ->autocomplete(),
+            AssociationField::new('category', 'Category')
+                    ->setRequired(true)
+                    ->autocomplete(),
             // Upload image
             //VichImageField::new('imageFile')->onlyOnForms(),
             ImageField::new('imageName')
