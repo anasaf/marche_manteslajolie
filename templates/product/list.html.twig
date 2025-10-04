@@ -57,7 +57,7 @@
                     <tr class="hover:bg-indigo-50 transition">
                         <td class="px-6 py-4 flex items-center gap-4">
                             <div class="w-16 h-16 flex-shrink-0 rounded-lg overflow-hidden shadow">
-                                <img src="{{ product.imageUrl ?? '/images/product-placeholder.png' }}"
+                                <img src="{{ asset('uploads/products/' ~ product.imageName) }}"
                                      alt="{{ product.name }}"
                                      class="w-full h-full object-cover">
                             </div>

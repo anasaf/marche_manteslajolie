@@ -22,9 +22,9 @@ easy_admin:
             class: App\Entity\Address
             label: 'Adresses'
             list:
-                fields: ['id', 'street', 'city', 'postalCode', 'country']
+                fields: ['name', 'address','city', 'postalCode', 'country']
             form:
-                fields: ['street', 'city', 'postalCode', 'country']
+                fields: ['name', 'address','city', 'postalCode', 'country']
 
         Order:
             class: App\Entity\Order
@@ -38,15 +38,15 @@ easy_admin:
             class: App\Entity\Merchant
             label: 'Commercant'
             list:
-                fields: ['id', 'name', 'description', 'phone', 'email', 'address', 'product']
+                fields: ['id', 'name', 'description', 'phone', 'email', 'password', 'address', 'imageFile']
             form:
                 fields:
                     - 'name'
                     - 'description'
-                    - 'phone'
+                    - 'telephone'
                     - 'email'
                     - { property: 'address', type: 'entity', type_options: { class: 'App\Entity\Address', choice_label: 'street' } }
-                    - { property: 'products', type: 'entity', type_options: { class: 'App\Entity\Product', multiple: true, choice_label: 'name' } }
+                    - { property: 'products', type: 'collection', label: 'Produits', type_options: { entry_type: 'App\Form\ProductType', by_reference: false } }
 
         Cart:
             class: App\Entity\Cart
@@ -68,12 +68,13 @@ easy_admin:
             class: App\Entity\Product
             label: 'Produits'
             list:
-                fields: ['id', 'name', 'price', 'stock', 'marchand', 'category']
+                fields: ['name','descriptuon', 'price', 'imageFile', 'stock', 'marchand', 'category']
             form:
                 fields:
                     - 'name'
                     - 'description'
                     - 'price'
+                    - { property: 'imageFile', type: 'Vich\UploaderBundle\Form\Type\VichImageType', label: 'Image du produit', required: false }
                     - 'stock'
                     - { property: 'merchant', type: 'association', label: 'Marchand' }
                     - { property: 'category', type: 'association', label: 'Categorie' }

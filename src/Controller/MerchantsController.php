@@ -1,12 +1,10 @@
 <?php
-
+declare(strict_types=1);
 namespace App\Controller;
 
-use App\Entity\Address;
 use App\Entity\Category;
 use App\Entity\Merchant;
-use App\Entity\Product;
-use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -43,72 +41,10 @@ class MerchantsController extends AbstractController
     }
 
     #[Route('/merchants/detail/{id}', name: 'merchant_detail')]
-    public function detail(string $id, PaginatorInterface $paginaton): Response
+    public function detail(string $id, EntityManagerInterface $em,  PaginatorInterface $paginaton): Response
     {
-        $category =  (New Category())
-            ->setName('parfum')
-            ->setId(1);
-        $merchant = (new Merchant())->setId($id)
-            ->addProducts((new Product())
-                ->setId(1)
-                ->setName('casquette')
-                ->setDescription('description')
-                ->setImageName('toto')
-                ->setPrice(300)
-                ->setStock(30)
-                ->setCategory($category)
-            )->setAddress(
-                (new Address())
-                    ->setAddress(" rue du cedre bleu")
-                    ->setCity("mantes")
-                    ->setPostalCode(78200)
-                    ->setIsActive(true)
-            )
-            ->setName('Maison du monde')
-            ->setDescription('belle vaisselle')
-        ;
-
-        $merchant->addProducts((new Product())
-            ->setId(2)
-            ->setName('belle')
-            ->setDescription('description')
-            ->setImageName('toto')
-            ->setPrice(200)
-            ->setStock(30)
-            ->setCategory($category));
-
-        $merchant->addProducts((new Product())
-            ->setId(3)
-            ->setName('nuit')
-            ->setDescription('description')
-            ->setImageName('toto')
-            ->setPrice(100)
-            ->setStock(30)
-            ->setCategory($category));
-
-        $merchant->addProducts((new Product())
-            ->setId(4)
-            ->setName('toto')
-            ->setDescription('description')
-            ->setImageName('toto')
-            ->setPrice(150)
-            ->setStock(30)
-            ->setCategory($category));
-
-        $merchant->setDescription('description');
-        $categories = (new ArrayCollection());
-        $categories
-            ->add(
-                $category
-            )
-        ;
-
-        $categories->add(
-            (New Category())
-                ->setName('gel douche')
-                ->setId(2)
-        );
-
+        $merchant = $em->getRepository(Merchant::class)->findOneBy(['id' => 1]);
+        $categories = $em->getRepository(Category::class)->findAll();
         $paginaton->paginate($merchant->getProducts(), 1, 8);
 
         return $this->render('merchant/sephora.html.twig',

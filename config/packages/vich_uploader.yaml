@@ -4,9 +4,10 @@ vich_uploader:
     mappings:
         products:
             uri_prefix: /uploads/products
-            upload_destination: '%kernel.project_dir%/public/uploads/products'
+            upload_destination: products.storage
             namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
+
         merchants:
             uri_prefix: /uploads/merchants
-            upload_destination: '%kernel.project_dir%/public/uploads/merchants'
+            upload_destination: merchants.storage
             namer: Vich\UploaderBundle\Naming\SmartUniqueNamer

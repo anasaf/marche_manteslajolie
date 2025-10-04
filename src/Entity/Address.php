@@ -159,6 +159,26 @@ class Address implements TostringInterface
 
     public function __toString(): string
     {
-        return $this->getFullAddress();
+        return $this->address.' '.$this->postalCode;
     }
+
+    /**
+     * @return int|null
+     */
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param int|null $id
+     * @return Address
+     */
+    public function setId(?int $id): Address
+    {
+        $this->id = $id;
+        return $this;
+    }
+
+
 }

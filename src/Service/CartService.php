@@ -1,20 +1,23 @@
 <?php
-
+declare(strict_types=1);
 namespace App\Service;
 
 
+use App\Entity\Product;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\EntityRepository;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use App\Repository\ProductRepository;
 
 class CartService
 {
     private SessionInterface $session;
-    private ProductRepository $productRepository;
 
-    public function __construct(SessionInterface $session, ProductRepository $productRepository)
+    public function __construct(RequestStack $requestStack, private ProductRepository $productRepository)
     {
-        $this->session = $session;
-        $this->productRepository = $productRepository;
+        $this->session = $requestStack->getSession();
     }
 
     public function add(int $id): void

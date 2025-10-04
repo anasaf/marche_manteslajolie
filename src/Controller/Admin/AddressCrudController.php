@@ -1,9 +1,11 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
 use App\Entity\Address;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TelephoneField;
@@ -20,22 +22,12 @@ class AddressCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         return [
-            TextField::new('firstName'),
-            TextField::new('lastName'),
-            EmailField::new('email'),
-            TelephoneField::new('phone'),
-            ChoiceField::new('roles', 'Rôles')
-                ->setChoices([
-                    'Utilisateur' => 'ROLE_USER',
-                    'Administrateur' => 'ROLE_ADMIN',
-                    'Super Admin' => 'ROLE_SUPER_ADMIN',
-                ])
-                ->allowMultipleChoices()
-                ->renderExpanded(),
-            AssociationField::new('address', 'address')
-                    ->setRequired(true)
-                    ->autocomplete(),
-
+            TextField::new('name'),
+            TextField::new('address'),
+            TextField::new('postalCode'),
+            TextField::new('city'),
+            TextField::new('country'),
+            BooleanField::new('isactive'),
         ];
     }
 }

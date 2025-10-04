@@ -1,9 +1,9 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Controller;
+use App\Entity\Category;
 use App\Entity\Product;
-use App\Repository\ProductRepository;
-use App\Repository\CategoryRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -13,22 +13,19 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class ProductController extends AbstractController
 {
-
-
     #[Route('/products', name: 'product_list')]
     public function list(
         Request $request,
-        ProductRepository $productRepository,
-        CategoryRepository $categoryRepository,
-        PaginatorInterface $paginator
+        PaginatorInterface $paginator,
+        EntityManagerInterface $em
     ): Response {
         // Filtres
         $search = $request->query->get('search', '');
-        $categoryId = $request->query->get('category');
+        $categoryId = 2; //$request->query->get('category');
         $sort = $request->query->get('sort', 'relevance');
 
         // Query builder
-        $qb = $productRepository->createQueryBuilder('p')
+        $qb = $em->getRepository(Product::class)->createQueryBuilder('p')
             ->leftJoin('p.category', 'c')
             ->addSelect('c');
 
@@ -69,7 +66,7 @@ class ProductController extends AbstractController
         );
 
         // Catégories pour le filtre
-        $categories = $categoryRepository->findAll();
+        $categories = $em->getRepository(Category::class)->findAll();
 
         return $this->render('product/list.html.twig', [
             'products' => $pagination,

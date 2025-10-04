@@ -8,26 +8,27 @@
 
 {% block body %}
     <div class="container mx-auto p-6">
-        {{ asset('css/sephora_products.css') }}
-
         <!-- Merchant Header -->
         <div class="merchant-header bg-white p-6 rounded-2xl shadow-lg flex gap-6 mb-8 items-center">
             <img src="{{ merchant.logoUrl ?? '/images/merchant-placeholder.png' }}" alt="{{ merchant.name }}" class="w-32 h-32 rounded-full object-cover border-4 border-pink-500">
             <div>
                 <h1 class="text-3xl font-bold">{{ merchant.name }}</h1>
                 <p class="text-gray-500">{{ merchant.category }}</p>
-                <p class="mt-2 text-gray-400">{{ merchant.description }}</p>
+                <p class="mt-2 text-gray-400">{{ merchant.description|striptags }}</p>
             </div>
         </div>
-
         <!-- Products Grid -->
         <div class="products-grid">
             {% for product in products %}
                 <div class="product-card relative">
-
                     <!-- Product Image -->
                     <div class="product-image">
-                        <img src="{{ product.imageFile ?? '/images/product-placeholder.png' }}" alt="{{ product.name }}">
+                        {% set  image = null %}
+                        {% if  product.imageName %}
+                            {% set image = asset('uploads/products/' ~ product.imageName) %}
+                        {% endif %}
+
+                        <img src="{{ image ?? '/images/product-placeholder.png' }}" alt="{{ product.name }}">
                         {% if product.isNew ?? false %}
                             <span class="product-badge">NEW</span>
                         {% endif %}
@@ -44,7 +45,7 @@
                     <!-- Product Info -->
                     <div class="product-info">
                         <h3>{{ product.name }}</h3>
-                        <p>{{ product.description }}</p>
+                        <p>{{ product.description |striptags}}</p>
                         <div class="product-price-rating">
                             <span class="price">{{ product.price }} €</span>
                             <span class="product-rating">
@@ -63,7 +64,6 @@
                 <p>No products available.</p>
             {% endfor %}
         </div>
-
         <!-- Pagination -->
         <div class="mt-8">
             {{ knp_pagination_render(products) }}

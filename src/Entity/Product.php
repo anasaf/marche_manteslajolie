@@ -2,12 +2,14 @@
 namespace App\Entity;
 
 use App\Entity\Traits\AccessorTrait;
+use App\Repository\ProductRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use Symfony\Component\HttpFoundation\File\File;
 
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: ProductRepository::class)]
 #[Vich\Uploadable]
+
 class Product
 {
     use AccessorTrait;

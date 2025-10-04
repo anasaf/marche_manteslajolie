@@ -84,6 +84,7 @@ class Merchant implements TostringInterface
     public function setCategory(?Category $c): self { $this->category = $c; return $this; }
 
     public function getProducts(): Collection { return $this->products; }
+
     public function addProducts($products){
 
         $this->products->add($products);
@@ -120,6 +121,15 @@ class Merchant implements TostringInterface
     {
         $this->address = $address;
 
+        return $this;
+    }
+
+    /**
+     * @param ArrayCollection|Collection $products
+     */
+    public function setProducts(ArrayCollection|Collection $products): self
+    {
+        $this->products = $products;
         return $this;
     }
 

@@ -1,0 +1,11 @@
+flysystem:
+    storages:
+        products.storage:
+            adapter: 'local'
+            options:
+                directory: '%kernel.project_dir%/public/uploads/products'
+
+        merchants.storage:
+            adapter: 'local'
+            options:
+                directory: '%kernel.project_dir%/public/uploads/merchants'

@@ -1,6 +1,8 @@
 <?php
+declare(strict_types=1);
 namespace App\Entity;
 
+use App\Entity\Interfaces\TostringInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -9,7 +11,7 @@ use App\Entity\Traits\BlameableTrait;
 
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
-class Category
+class Category implements TostringInterface
 {
     use TimestampableTrait;
     use BlameableTrait;
@@ -39,5 +41,10 @@ class Category
     {
         $this->id = $id;
         return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->name;
     }
 }
