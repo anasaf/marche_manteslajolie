@@ -6,13 +6,13 @@
     <h1>Commerçants ({{ categorie|capitalize }})</h1>
 
     <div class="row">
-        {% for commercant in commercants %}
+        {% for merchant in merchants %}
             <div class="col-md-4">
                 <div class="card mb-3 shadow-sm">
                     <div class="card-body">
-                        <h5 class="card-title">{{ commercant.nom }}</h5>
-                        <p class="card-text">{{ commercant.description }}</p>
-                        <a href="{{ path('detail', {id: commercant.id}) }}" class="btn btn-primary">Voir le détail</a>
+                        <h5 class="card-title">{{ merchant.nom }}</h5>
+                        <p class="card-text">{{ merchant.description }}</p>
+                        <a href="{{ path('detail', {id: merchant.id}) }}" class="btn btn-primary">Voir le détail</a>
                     </div>
                 </div>
             </div>

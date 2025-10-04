@@ -1,0 +1,45 @@
+version: "3.9"
+
+services:
+  app:
+    container_name: symfony_app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - database
+      - mailhog
+    ports:
+      - "8080:80"
+
+  database:
+    image: postgres:15
+    container_name: symfony_db
+    environment:
+      POSTGRES_USER: symfony
+      POSTGRES_PASSWORD: symfony
+      POSTGRES_DB: symfony
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  adminer:
+    image: adminer:latest
+    container_name: symfony_adminer
+    restart: always
+    ports:
+      - "8081:8080"
+
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: symfony_mailhog
+    restart: always
+    ports:
+      - "8025:8025"
+      - "1025:1025"
+
+volumes:
+  db_data:

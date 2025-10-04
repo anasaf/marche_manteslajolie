@@ -10,7 +10,7 @@
         .navbar { padding: 1rem 2rem; }
         .hero {
             height: 85vh;
-            background: url('https://picsum.photos/1920/1080?blur=2') center/cover no-repeat;
+            background: url("{{ asset('images/home'~random(9)~'.jpg') }}") center/cover no-repeat;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -32,6 +32,9 @@
             margin-top: 3rem;
         }
     </style>
+    {% block stylesheets %}
+        {{ encore_entry_link_tags('app') }}
+    {% endblock %}
 </head>
 <body>
 <!-- Navbar -->
@@ -48,9 +51,9 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Commerçants</a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="{{ path('commercants', {categorie: 'alimentaire'}) }}">Alimentaire</a></li>
-                        <li><a class="dropdown-item" href="{{ path('commercants', {categorie: 'mode'}) }}">Mode</a></li>
-                        <li><a class="dropdown-item" href="{{ path('commercants', {categorie: 'services'}) }}">Services</a></li>
+                        <li><a class="dropdown-item" href="{{ path('merchants', {categorie: 'alimentaire'}) }}">Alimentaire</a></li>
+                        <li><a class="dropdown-item" href="{{ path('merchants', {categorie: 'mode'}) }}">Mode</a></li>
+                        <li><a class="dropdown-item" href="{{ path('merchants', {categorie: 'services'}) }}">Services</a></li>
                     </ul>
                 </li>
                 <li class="nav-item"><a class="nav-link" href="{#  { path('contact') }#}">Contact</a></li>
